@@ -3,119 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網頁版番茄鐘</title>
+    <title>番茄鐘計時器 - 郭庭華</title>
     <style>
-        :root {
-            --bg-light-yellow: #FFF9E3;
-            --pomodoro-orange: #FF6347;
-            --dark-coffee: #4B3621;
-        }
-
+        /* 1. 網頁背景設為淺黃色 */
         body {
-            background-color: var(--bg-light-yellow);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #FFFFE0; /* Light Yellow */
             margin: 0;
-            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
             transition: background-color 0.3s;
         }
 
-        /* 需求6: 計時截止時網頁背景設為淺黃色與深咖啡交互顯示 */
-        .alarm-bg {
-            animation: bgBlink 0.5s infinite;
+        /* 10. 簽名資訊樣式 */
+        #signature {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 18px;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            line-height: 1.5;
         }
 
-        @keyframes bgBlink {
-            0%, 100% { background-color: var(--bg-light-yellow); }
-            50% { background-color: var(--dark-coffee); }
-        }
-
-        /* 需求8: 番茄鐘大小為 500px * 500px */
-        /* 需求2: 番茄鐘表面設為橘紅色 */
-        #pomodoro {
+        /* 2. 番茄鐘表面設為橘紅色, 8. 大小為 500px*500px */
+        #pomodoro-clock {
             width: 500px;
             height: 500px;
-            background-color: var(--pomodoro-orange);
-            border-radius: 50%; /* 圓形 */
+            background-color: #FF4500; /* Orange Red */
+            border-radius: 50%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* 增加立體感 */
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 5px solid #8B0000; /* 深紅色邊框增加立體感 */
             position: relative;
         }
 
-        /* 需求4: 顯示剩餘時間 */
-        #timer-display {
-            font-size: 90px;
-            color: white;
-            margin-bottom: 20px;
-            user-select: none;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        /* 需求5: 計時截止前3分鐘時，時間數字會閃爍且加粗 */
-        .warning {
-            font-weight: 900 !important; /* 加粗 */
-            animation: textBlink 1s infinite; /* 閃爍 */
-        }
-
-        @keyframes textBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        /* 控制面板區域 */
-        .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-
-        /* 輸入框樣式 */
-        input[type="number"] {
-            width: 60px;
-            padding: 5px;
-            font-size: 20px;
-            text-align: center;
+        /* 葉子裝飾 (增加番茄感) */
+        #pomodoro-clock::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            width: 40px;
+            height: 40px;
+            background-color: #228B22;
             border-radius: 10px;
-            border: 2px solid white;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
+            transform: rotate(45deg);
         }
 
-        span.colon {
+        /* 4. 時間顯示區域 */
+        #timer-display {
+            font-size: 100px;
             color: white;
-            font-size: 30px;
             font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace; /* 等寬字體避免數字跳動 */
         }
 
+        /* 輸入框區域 (設定時顯示) */
+        #settings-panel {
+            display: none; /* 預設隱藏 */
+            margin-bottom: 20px;
+        }
+
+        .time-input {
+            width: 80px;
+            height: 60px;
+            font-size: 40px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+
+        /* 按鈕樣式 */
         .btn-group {
             display: flex;
             gap: 10px;
         }
 
-        /* 按鈕樣式 */
         button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
             border: none;
-            border-radius: 25px;
+            border-radius: 50px;
             background-color: white;
-            color: var(--pomodoro-orange);
+            color: #FF4500;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.1s, background-color 0.2s;
+            transition: transform 0.1s;
         }
 
         button:active {
@@ -123,126 +108,237 @@
         }
 
         button:hover {
-            background-color: #f8f8f8;
+            background-color: #f0f0f0;
         }
 
-        /* 為開始按鈕設計特別樣式 */
-        #btn-start {
-            background-color: #4CAF50; /* 綠色 */
-            color: white;
+        /* 5. 計時截止前3分鐘時，時間數字會閃爍且加粗 */
+        @keyframes blinkBold {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
         }
-        #btn-start:hover {
-            background-color: #45a049;
+
+        .urgent {
+            animation: blinkBold 1s infinite;
+            font-weight: 900 !important; /* 加粗 */
+            color: #FFFF00 !important; /* 改為黃色以示警示 */
+        }
+
+        /* 6. 計時截止時網頁背景設為淺黃色與深咖啡交互顯示 */
+        @keyframes bgFlash {
+            0% { background-color: #FFFFE0; } /* 淺黃 */
+            50% { background-color: #4B3621; } /* 深咖啡 (Dark Brown) */
+            100% { background-color: #FFFFE0; }
+        }
+
+        .alarm-active {
+            animation: bgFlash 0.5s infinite;
+        }
+
+        /* 截止時文字變為閃爍紅色 */
+        .time-up-text {
+            color: #4B3621 !important;
         }
 
     </style>
 </head>
-<body id="body">
+<body>
 
-    <div id="pomodoro">
-        <div id="timer-display">25:00</div>
+    <div id="signature">
+        學號: 41418117<br>
+        姓名: 郭庭華<br>
+        日期: 2025/12/22
+    </div>
+
+    <div id="pomodoro-clock">
         
-        <div class="controls">
-            <div class="input-group">
-                <input type="number" id="min-input" placeholder="分" min="0" max="99" value="25">
-                <span class="colon">:</span>
-                <input type="number" id="sec-input" placeholder="秒" min="0" max="59" value="00">
-            </div>
+        <div id="timer-display">25:00</div>
 
-            <div class="btn-group">
-                <button onclick="setTime()">設定</button>
-                <button onclick="resetTimer()">清除</button>
-            </div>
-            <button id="btn-start" onclick="startTimer()">開始計時</button>
+        <div id="settings-panel">
+            <input type="number" id="input-min" class="time-input" placeholder="分" min="0" max="99" value="25">
+            <span style="font-size: 40px; color: white;">:</span>
+            <input type="number" id="input-sec" class="time-input" placeholder="秒" min="0" max="59" value="00">
+        </div>
+
+        <div class="btn-group">
+            <button id="btn-start" onclick="startTimer()">開始</button>
+            <button id="btn-settings" onclick="toggleSettings()">設定</button>
+            <button id="btn-clear" onclick="clearTimer()">清除/重置</button>
         </div>
     </div>
 
     <script>
-        let countdown; // 倒數計時器變數
-        let totalSeconds; // 總秒數
-        const display = document.getElementById('timer-display');
-        const body = document.getElementById('body');
-        const minInput = document.getElementById('min-input');
-        const secInput = document.getElementById('sec-input');
-        
-        // 格式化時間顯示 MM:SS
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        // 變數宣告
+        let timerInterval = null;
+        let totalSeconds = 1500; // 預設 25 分鐘
+        let initialSeconds = 1500; // 用於重置
+        let isRunning = false;
+        let isSettingsMode = false;
+
+        // DOM 元素
+        const displayEl = document.getElementById('timer-display');
+        const bodyEl = document.body;
+        const settingsPanel = document.getElementById('settings-panel');
+        const inputMin = document.getElementById('input-min');
+        const inputSec = document.getElementById('input-sec');
+        const btnStart = document.getElementById('btn-start');
+        const btnSettings = document.getElementById('btn-settings');
+
+        // 初始化顯示
+        updateDisplay();
+
+        // 更新畫面時間文字
+        function updateDisplay() {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            // 補零格式化
+            let minStr = minutes < 10 ? "0" + minutes : minutes;
+            let secStr = seconds < 10 ? "0" + seconds : seconds;
+
+            displayEl.textContent = `${minStr}:${secStr}`;
         }
 
-        // 更新畫面與狀態檢查
-        function updateDisplay(seconds) {
-            display.textContent = formatTime(seconds);
-
-            // 需求5: 計時截止前3分鐘 (180秒) 時，時間數字會閃爍且加粗
-            // 必須大於0秒才閃爍，0秒時會切換成背景閃爍
-            if (seconds > 0 && seconds <= 180) {
-                display.classList.add('warning');
-            } else {
-                display.classList.remove('warning');
-            }
-        }
-
-        // 按下「設定」
-        function setTime() {
-            clearInterval(countdown); // 停止正在跑的計時
-            body.classList.remove('alarm-bg'); // 移除背景閃爍
-            display.classList.remove('warning'); // 移除文字閃爍
-
-            let m = parseInt(minInput.value) || 0;
-            let s = parseInt(secInput.value) || 0;
-            
-            // 限制最大值 99:59
-            if (m > 99) m = 99;
-            if (s > 59) s = 59;
-            
-            // 更新輸入框顯示修正後的值
-            minInput.value = m;
-            secInput.value = s.toString().padStart(2, '0');
-
-            totalSeconds = m * 60 + s;
-            updateDisplay(totalSeconds);
-        }
-
-        // 按下「開始」
+        // 開始計時
         function startTimer() {
-            // 如果沒有設定時間或已經歸零，先讀取輸入框的值
-            if (totalSeconds === undefined || totalSeconds === 0) {
-                setTime();
+            if (isRunning) return; // 防止重複點擊
+            if (totalSeconds === 0 && !isSettingsMode) {
+                alert("請先設定時間！");
+                return;
             }
 
-            if (totalSeconds <= 0) return;
+            // 如果在設定模式下按開始，先確認設定
+            if (isSettingsMode) {
+                applySettings();
+            }
 
-            // 避免重複點擊造成多重計時器
-            clearInterval(countdown);
-            body.classList.remove('alarm-bg');
+            isRunning = true;
+            btnStart.textContent = "計時中...";
+            btnStart.disabled = true; // 鎖定開始按鈕
+            btnSettings.disabled = true; // 鎖定設定按鈕
 
-            countdown = setInterval(() => {
-                totalSeconds--;
-                updateDisplay(totalSeconds);
+            // 清除之前的背景閃爍
+            bodyEl.classList.remove('alarm-active');
+            displayEl.classList.remove('time-up-text');
 
-                // 時間到
-                if (totalSeconds <= 0) {
-                    clearInterval(countdown);
-                    display.classList.remove('warning'); // 停止文字閃爍
-                    body.classList.add('alarm-bg'); // 需求6: 背景交互顯示
+            timerInterval = setInterval(() => {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    updateDisplay();
+                    checkWarning(); // 檢查是否需要閃爍
+                } else {
+                    // 時間到
+                    timeUp();
                 }
             }, 1000);
         }
 
-        // 按下「清除」
-        function resetTimer() {
-            clearInterval(countdown);
-            totalSeconds = 0;
-            updateDisplay(0);
-            body.classList.remove('alarm-bg');
-            display.classList.remove('warning');
+        // 5. 檢查是否進入最後3分鐘 (180秒)
+        function checkWarning() {
+            if (totalSeconds <= 180 && totalSeconds > 0) {
+                displayEl.classList.add('urgent');
+            } else {
+                displayEl.classList.remove('urgent');
+            }
         }
 
-        // 頁面載入時初始化顯示
-        setTime();
+        // 6. 時間到觸發
+        function timeUp() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            totalSeconds = 0;
+            updateDisplay();
+            
+            displayEl.classList.remove('urgent');
+            displayEl.classList.add('time-up-text');
+            
+            // 背景閃爍
+            bodyEl.classList.add('alarm-active');
+            
+            btnStart.textContent = "開始";
+            btnStart.disabled = false;
+            btnSettings.disabled = false;
+        }
+
+        // 7. 清除/重置按鈕
+        function clearTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            
+            // 恢復到最近一次設定的時間
+            totalSeconds = initialSeconds; 
+            
+            // 移除所有特效
+            bodyEl.classList.remove('alarm-active');
+            displayEl.classList.remove('urgent');
+            displayEl.classList.remove('time-up-text');
+
+            btnStart.textContent = "開始";
+            btnStart.disabled = false;
+            btnSettings.disabled = false;
+
+            // 如果正在設定模式，也順便關閉
+            if(isSettingsMode) {
+                toggleSettings();
+            }
+            
+            updateDisplay();
+        }
+
+        // 7. 切換設定模式
+        function toggleSettings() {
+            isSettingsMode = !isSettingsMode;
+
+            if (isSettingsMode) {
+                // 進入設定模式：隱藏時間，顯示輸入框
+                displayEl.style.display = 'none';
+                settingsPanel.style.display = 'block';
+                btnSettings.textContent = "確認設定";
+                
+                // 帶入當前數值到輸入框
+                let currentMin = Math.floor(totalSeconds / 60);
+                let currentSec = totalSeconds % 60;
+                inputMin.value = currentMin;
+                inputSec.value = currentSec < 10 ? "0" + currentSec : currentSec;
+                
+            } else {
+                // 離開設定模式 (按下確認)
+                applySettings();
+            }
+        }
+
+        // 應用設定值
+        function applySettings() {
+            let m = parseInt(inputMin.value);
+            let s = parseInt(inputSec.value);
+
+            // 驗證輸入範圍
+            if (isNaN(m)) m = 0;
+            if (isNaN(s)) s = 0;
+            
+            // 3. 最長 99分 59秒
+            if (m > 99) m = 99;
+            if (s > 59) s = 59;
+            if (m < 0) m = 0;
+            if (s < 0) s = 0;
+
+            // 更新全域變數
+            totalSeconds = (m * 60) + s;
+            initialSeconds = totalSeconds; // 記住這個設定值以便清除時恢復
+
+            // 更新 UI
+            updateDisplay();
+            
+            // 切換回顯示模式
+            displayEl.style.display = 'block';
+            settingsPanel.style.display = 'none';
+            btnSettings.textContent = "設定";
+            
+            // 移除任何殘留的警示樣式
+            displayEl.classList.remove('urgent');
+            isSettingsMode = false;
+        }
+
     </script>
 </body>
 </html>
